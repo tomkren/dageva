@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kutil>
+    <o type="time" ups="80">
+        <o type="frame" id="$1" size="1000 800" pos="200 200" guiStuff="true" title="Okénko">
+
+            <o type="button" title="pause/play" cmd="play" pos="10 10" />
+            <o type="button" title="Undo" cmd="undo" pos="100 10"/>
+            <!--<object type="button" title="changeInsertMode" cmd="changeInsertMode" pos="120 30" />-->
+
+            <o type="frame" id="$2" size="2000 1500" pos="10 40" main="true" guiStuff="true" title="Malý svět">
+
+                <o id="$fce1" pos="327 51"  shape="f 2 3 dlouhé-jméno $fce2:5 $stone:0"/>
+                <o id="$fce2" pos="43 202"  shape="f 10 3 ."/>
+                <o id="$fce3" pos="190 289" shape="f 2 8 dot"/>
+                <o id="$fce4" pos="198 390" shape="f 1 1 dlouhé-jméno-a-příjmení"/>
+
+                <o id="$stone" pos="400 302" physical="true"/>
+                <o id="$podložka" pos="363 410" shape="rectangle 100 10" physical="true" attached="true"/>
+
+                <o type="frame" id="$xmlPohled" title="XML pohled na 'Malý svět'" target="$2" showXML="true" size="500 400" pos="820 80" guiStuff="true"/>
+
+                <o id="$w_82" pos="-77 14"   shape="f 1 2 k-means $w_83:0 $w_88:0"/>
+                <o id="$w_81" pos="-77 -82"  shape="f 1 1 PCA $w_82:0"/>
+                <o id="$w_88" pos="-31 107"  shape="f 1 1 MLP $w_89:0"/>
+                <o id="$w_83" pos="-119 108" shape="f 1 1 PCA $w_84:0"/>
+                <o id="$w_86" pos="-88 272"  shape="f 1 1 MLP $w_87:0"/>
+                <o id="$w_87" pos="-124 371" shape="f 1 1 U $w_89:0"/>
+                <o id="$w_85" pos="-167 270" shape="f 1 1 MLP $w_87:0"/>
+                <o id="$w_89" pos="-45 496"  shape="f 1 1 U"/>
+                <o id="$w_84" pos="-125 190" shape="f 1 2 k-means $w_85:0 $w_86:0"/>
+
+
+
+            </o>
+
+
+        </o>
+    </o>
+</kutil>

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kutil>
+    <o type="time" ups="80">
+
+        <o type="frame" title="Pokusy s DAGama" id="$window">
+
+            <o type="frame" title="Pohled na frame okna" showXML="true" target="$window" pos="221 -579" size="640 480" />
+            <o type="frame" title="Pohled na frame s resultem" showXML="true" target="$pokus3" pos="-455 -580" size="640 480" />
+
+
+            <macro type="TypedDagGenerator" id="$pokus3" title="Basic para seri" off="!true" size="2500 2000" pos="4 4">
+                <n>10</n>
+                <goal>D => LD</goal>
+                <lib>
+                    TypedDag.dia( TypedDag: a => a , TypedDag: a => (V b n) , TypedDag: (V b n) => b ) : a => b ;
+                    TypedDag.split( TypedDag: a => (V a n) , MyList: V (a => b) n ) : a => (V b n) ;
+                    MyList.cons( Object: a , MyList: V a n ) : V a (S n) ;
+                    MyList.nil : V a 0 ;
+                    PCA : D => D ;
+                    k-means : D => (V D (S(S n))) ;
+                    MLP : D => LD ;
+                    U : (V LD (S(S n))) => LD ;
+                </lib>
+            </macro>
+
+
+            <!-- TODO OMG na 86 se to sekne -->
+            <!-- todo prověřit v novym tohle zase :
+              seri, x1 => x3, x1 => x2, x2 => x3;
+              para, (P x1 x2) => (P x3 x4), x1 => x3, x2 => x4;
+              MLP, D => LD;
+              2-means, D => (P D D);
+              2-U, (P LD LD) => LD;
+            -->
+
+
+            <macro type="DAG-generator" id="$pokus1" title="Jednoduchá sada jen s MLP" off="true" size="2500 2000" pos="4 4">
+                <n>100-300</n>
+                <goal>D -> LD</goal>
+                <lib>
+                    DIA     , x1 -> x2        ,  x1 -> x1             ,  x1 -> (List x2)   ,   (List x2) -> x2 ;
+                    SPLIT   , x1 -> (List x2) ,  x1 -> (NList x1 x3)  ,  NList (x1 -> x2) x3 ;
+                    :       , NList x1 (S x2) ,  x1                   ,  NList x1 x2 ;
+                    []      , NList x1 0 ;
+                    PCA     , D -> D ;
+
+                    k-means , D -> (NList D (S(S x1))) ;
+                    MLP     , D -> LD ;
+                    U       , (List LD) -> LD
+                </lib>
+            </macro>
+
+            <!-- RBF, D -> LD ; CNN , D -> LD ; -->
+
+
+            <macro type="DAG-generator" id="$pokus2" title="Pokusná sada" off="true">
+                <n>1000-1100</n>
+                <goal>D -> LD</goal>
+                <lib>
+                    SERI    , x1 -> x3        ,  x1 -> x2             ,  x2 -> x3 ;
+                    SPLIT   , x1 -> (List x2) ,  x1 -> (NList x1 x3)  ,  NList (x1 -> x2) x3 ;
+                    :       , NList x1 (S x2) ,  x1                   ,  NList x1 x2 ;
+                    []      , NList x1 0 ;
+                    PCA     , D -> D ;
+                    k-means , D -> (NList D (S(S x1))) ;
+                    MLP     , D -> LD ;
+                    <!-- boost   , LD -> D ; -->
+                    U       , (List LD) -> LD
+                </lib>
+            </macro>
+
+        </o>
+
+
+    </o>
+</kutil>
