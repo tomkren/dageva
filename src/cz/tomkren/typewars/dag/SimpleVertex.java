@@ -1,4 +1,4 @@
-package cz.tomkren.pikater;
+package cz.tomkren.typewars.dag;
 
 import cz.tomkren.helpers.F;
 

@@ -3,7 +3,7 @@ package cz.tomkren.typewars;
 import cz.tomkren.helpers.AB;
 import cz.tomkren.helpers.F;
 import cz.tomkren.kutil2.items.Int2D;
-import cz.tomkren.pikater.SimpleVertex;
+import cz.tomkren.typewars.dag.SimpleVertex;
 import org.json.JSONObject;
 
 import java.util.ArrayList;

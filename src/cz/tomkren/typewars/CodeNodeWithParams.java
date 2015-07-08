@@ -8,7 +8,7 @@ import org.json.JSONObject;
 import java.util.*;
 import java.util.function.Function;
 
-/** Created by pejsek on 3.7.2015. */
+/** Created by tom on 3.7.2015. */
 
 public class CodeNodeWithParams extends CodeNode {
 

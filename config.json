@@ -1,0 +1,26 @@
+{
+  "seed" : 1,
+
+  "serverUrl" : "http://127.0.0.1:8080",
+  "dataset" : "winequality-white.csv",
+
+  "numGenerations": 10,
+  "populationSize": 8,
+
+  "generatingMaxTreeSize":  15,
+  "mutationMaxSubtreeSize": 10,
+
+  "tournamentBetterWinsProbability" : 0.8,
+
+  "basicTypedXoverProbability" : 0.3,
+  "sameSizeSubtreeMutationProbability" : 0.3,
+  "oneParamMutationProbability" : 0.3,
+  "copyOpProbability" : 0.1,
+
+
+
+  "saveBest" : true,
+
+  "goalType" : "D => LD"
+
+}

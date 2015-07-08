@@ -4,7 +4,7 @@ package cz.tomkren.typewars;
 import com.google.common.base.Joiner;
 import cz.tomkren.helpers.*;
 import cz.tomkren.kutil2.items.Int2D;
-import cz.tomkren.pikater.SimpleVertex;
+import cz.tomkren.typewars.dag.SimpleVertex;
 import org.json.JSONObject;
 
 import java.lang.reflect.InvocationTargetException;
