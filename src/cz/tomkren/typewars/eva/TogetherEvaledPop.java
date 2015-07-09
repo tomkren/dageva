@@ -1,11 +1,14 @@
 package cz.tomkren.typewars.eva;
 
 import cz.tomkren.helpers.F;
+import cz.tomkren.helpers.Log;
+import cz.tomkren.typewars.TypedDag;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.function.Predicate;
 
 /** Created by tom on 1. 7. 2015. */
 
@@ -14,7 +17,7 @@ public class TogetherEvaledPop<Indiv extends FitIndiv> implements EvaledPop<Indi
     private Distribution<Indiv> popDist;
     private List<Indiv> terminators;
 
-    public TogetherEvaledPop(List<Indiv> pop, TogetherFitFun tFitness, int gen, Comparator<Indiv> comparator) {
+    public TogetherEvaledPop(List<Indiv> pop, TogetherFitFun tFitness, int gen, Comparator<Indiv> comparator, Logger<Indiv> logger) {
         tFitness.initGeneration(gen);
         terminators = new ArrayList<>();
 
@@ -27,26 +30,72 @@ public class TogetherEvaledPop<Indiv extends FitIndiv> implements EvaledPop<Indi
 
 
         List<Object> objs = F.map(pop, FitIndiv::computeValue);
-        List<FitVal> fitVals = tFitness.getFitVals(objs);
 
-        int popSize = pop.size();
-        if (popSize != fitVals.size()) {
+        List<Object> okObjs = F.filter(objs, o -> !((TypedDag) o).isMalformed()); // TODO OBECNE, TOHLE JEN HACK NA BUG !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-            throw new Error("There must be same number of individuals and fitness values! "+popSize +" != "+ fitVals.size());
+
+        boolean errorOccurred = false;
+        if (okObjs.size() != objs.size()) { // caught ERROR individual !!!
+            errorOccurred = true;
+
+            List<Object> koObjs = F.filter(objs, o -> ((TypedDag) o).isMalformed());
+
+            // LOG THEM ALL !!!!
+
+            logger.logErrorIndivs(gen, koObjs);
+
+            System.err.println("\n\n\n ERROR individuals !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+
+            Log.itln("\n\n\n\n ERROR individuals !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n\n\n\n");
+            Log.list(F.map(koObjs, o -> ((TypedDag) o).toJson()));
+            Log.itln("\n\n\n\n");
+
         }
 
-        for (int i = 0; i < popSize; i++) {
+        List<FitVal> fitVals = tFitness.getFitVals(okObjs);
 
-            Indiv ind = pop.get(i);
-            FitVal fitVal = fitVals.get(i);
-            ind.setFitVal(fitVal);
+        if (okObjs.size() != fitVals.size()) {
+            throw new Error("There must be same number of individuals and fitness values! "+okObjs.size() +" != "+ fitVals.size());
+        }
 
-            if (fitVal.isOK()) {
-                terminators.add(ind);
+        List<Indiv> newPop_errorCase = new ArrayList<>();
+
+        int popSize = pop.size();
+
+        if (errorOccurred) {
+
+            int j = 0;
+            for (int i = 0; i < popSize; i++) {
+
+
+                Indiv ind = pop.get(i);
+
+                if (!((TypedDag) ind.computeValue()).isMalformed()) {
+
+                    newPop_errorCase.add(ind);
+
+                    FitVal fitVal = fitVals.get(j);
+                    ind.setFitVal(fitVal);
+
+                    j++;
+                }
+            }
+
+        } else {
+
+            for (int i = 0; i < popSize; i++) {
+
+                Indiv ind = pop.get(i);
+                FitVal fitVal = fitVals.get(i);
+                ind.setFitVal(fitVal);
+
+                if (fitVal.isOK()) {
+                    terminators.add(ind);
+                }
             }
         }
 
-        popDist = new Distribution<>(pop);
+        popDist = new Distribution<>( errorOccurred ? newPop_errorCase : pop );
     }
 
     @Override

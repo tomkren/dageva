@@ -26,6 +26,9 @@ public class Main {
 
     public static void main(String[] args) {
 
+        Log.it("dageva [v0.3]");
+
+
         if (args.length < 2 || args[0].equals("--help")) {
             Log.it("You must provide two program arguments: <json-config-filename> <log-dir-path>");
             return;

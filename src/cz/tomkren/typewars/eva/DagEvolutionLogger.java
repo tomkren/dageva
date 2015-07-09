@@ -1,5 +1,6 @@
 package cz.tomkren.typewars.eva;
 
+import com.google.common.base.Joiner;
 import cz.tomkren.helpers.AA;
 import cz.tomkren.helpers.Checker;
 import cz.tomkren.helpers.F;
@@ -13,12 +14,12 @@ import org.json.JSONObject;
 import java.io.*;
 import java.util.List;
 
-/** Created by pejsek on 6.7.2015. */
+/** Created by tom on 6.7.2015. */
 
 public class DagEvolutionLogger implements Logger<PolyTree> {
 
     private final File runLogDir;
-    private final File parsableSubDir;
+    //private final File parsableSubDir; // TODO zase zprovoznit !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     private final Checker checker;
 
     public DagEvolutionLogger(JSONObject config, String logPath, Checker checker) {
@@ -27,7 +28,7 @@ public class DagEvolutionLogger implements Logger<PolyTree> {
 
         if (logPath == null) {
             runLogDir = null;
-            parsableSubDir = null;
+            //parsableSubDir = null;
             return;
         }
 
@@ -45,13 +46,13 @@ public class DagEvolutionLogger implements Logger<PolyTree> {
         }
 
         runLogDir = new File(logPath,"run_"+i);
-        parsableSubDir = new File(runLogDir, "parsable");
+        //parsableSubDir = new File(runLogDir, "parsable");
 
 
         boolean success1 = runLogDir.mkdir();
-        boolean success2 = parsableSubDir.mkdir();
+        //boolean success2 = parsableSubDir.mkdir();
 
-        if (!success1 || !success2) {
+        if (!success1 /*|| !success2*/) {
             throw new Error("Unable to create log directory!");
         }
 
@@ -60,6 +61,12 @@ public class DagEvolutionLogger implements Logger<PolyTree> {
 
         writeToFile("config.json", config.toString(2));
 
+    }
+
+    @Override
+    public void logErrorIndivs(int generation, List<Object> errorIndiv) {
+        String errorLogStr = Joiner.on("\n\n").join( F.map(errorIndiv, o->((TypedDag)o).toJson()) );
+        writeToFile("ERROR_malformed_in_generation_" + generation + ".json", errorLogStr);
     }
 
     private void writeToFile(String filename, String str) {
@@ -89,13 +96,13 @@ public class DagEvolutionLogger implements Logger<PolyTree> {
 
         if (runLogDir != null) {
 
-            AA<JSONObject> twoJsons = evaledPopToJson(pop);
-            JSONObject readable = twoJsons._1();
-            JSONObject parsable = twoJsons._2();
+            //AA<JSONObject> twoJsons = evaledPopToJson(pop);
+            JSONObject readable = evaledPopToJson(pop); //twoJsons._1();
+            //JSONObject parsable = twoJsons._2();
 
             writeToFile("gen_" + generation + ".json" , readable.toString(2));
-            writeToFile(new File(parsableSubDir, "gen_" + generation +  "_dense.json"), parsable.toString());
-            writeToFile(new File(parsableSubDir, "gen_" + generation + "_indent.json"), parsable.toString(2));
+            //writeToFile(new File(parsableSubDir, "gen_" + generation +  "_dense.json"), parsable.toString());
+            //writeToFile(new File(parsableSubDir, "gen_" + generation + "_indent.json"), parsable.toString(2));
         }
 
 
@@ -106,35 +113,35 @@ public class DagEvolutionLogger implements Logger<PolyTree> {
 
     }
 
-    public AA<JSONObject> evaledPopToJson(EvaledPop<PolyTree> pop) {
+    public JSONObject evaledPopToJson(EvaledPop<PolyTree> pop) {
 
         JSONArray readablePop = new JSONArray();
-        JSONArray parsablePop = new JSONArray();
+        //JSONArray parsablePop = new JSONArray();
 
-        for(AA<JSONObject> p:  F.map(F.sort(pop.getIndividuals().getList(), t -> -t.getFitVal().getVal()), DagEvolutionLogger::dagTreeIndividualToJson)) {
-            readablePop.put(p._1());
-            parsablePop.put(p._2());
+        for(JSONObject p:  F.map(F.sort(pop.getIndividuals().getList(), t -> -t.getFitVal().getVal()), DagEvolutionLogger::dagTreeIndividualToJson)) {
+            readablePop.put(p);
+            //parsablePop.put(p._2());
         }
 
         JSONObject readable = new JSONObject();
-        JSONObject parsable = new JSONObject();
+        //JSONObject parsable = new JSONObject();
 
         readable.put("time", checker.getTime());
         readable.put("population", readablePop);
 
-        parsable.put("time", checker.getTime());
-        parsable.put("population", parsablePop);
+        //parsable.put("time", checker.getTime());
+        //parsable.put("population", parsablePop);
 
-        return new AA<>(readable,parsable);
+        return /*new AA<>(*/readable/*,parsable)*/;
     }
 
-    public static AA<JSONObject> dagTreeIndividualToJson(PolyTree tree) {
+    public static JSONObject dagTreeIndividualToJson(PolyTree tree) {
 
         //TODO trochu neefektivní počítat znova, ale snad to přežijem
         TypedDag dag = (TypedDag)tree.computeValue();
 
         JSONObject readable = new JSONObject();
-        JSONObject parsable = new JSONObject();
+        //JSONObject parsable = new JSONObject();
 
         readable.put("fit", tree.getFitVal().getVal());
         readable.put("short", tree.toStringWithoutParams());
@@ -142,10 +149,10 @@ public class DagEvolutionLogger implements Logger<PolyTree> {
         readable.put("json", dag.toJson().replace('"', '\'').replace("\n", "").replace(" ", ""));
         readable.put("kutil", dag.toKutilXML(new Int2D(100, 100)));
 
-        parsable.put("fit", tree.getFitVal().getVal());
-        parsable.put("json", new JSONObject(dag.toJson()) );
+        //parsable.put("fit", tree.getFitVal().getVal());
+        //parsable.put("json", new JSONObject(dag.toJson()) );
 
-        return new AA<>(readable, parsable);
+        return readable; //new AA<>(readable, parsable);
     }
 
 

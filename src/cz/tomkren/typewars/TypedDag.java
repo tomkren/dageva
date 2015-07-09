@@ -449,7 +449,7 @@ public class TypedDag {
     public String toKutilXML(Int2D pos) {
         StringBuilder sb = new StringBuilder();
 
-        forEachVertex( v -> {
+        forEachVertex(v -> {
             v.toKutilXML(sb, pos);
             sb.append('\n');
         });
@@ -466,14 +466,40 @@ public class TypedDag {
         return sb.toString();
     }
 
+    private boolean isMalformed = false;
+
+    public boolean isMalformed() {
+
+        Set<Integer> ids = new HashSet<>();
+
+        forEachVertex(v -> {
+            int vId = v.getId();
+            if (ids.contains(vId)) {
+                isMalformed = true;
+            }
+            ids.add(vId);
+        });
+
+        return isMalformed;
+    }
+
     public String toJson() {
         StringBuilder sb = new StringBuilder();
         sb.append("{\n  ");
         Vertex.toJson_input(sb, ins);
         sb.append(",\n");
 
+        Set<Integer> ids = new HashSet<>();
+
         forEachVertex(v -> {
             sb.append("  ");
+
+            int vId = v.getId();
+            if (ids.contains(vId)) {
+                isMalformed = true;
+            }
+            ids.add(vId);
+
             v.toJson(sb);
             sb.append(",\n");
         });

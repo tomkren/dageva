@@ -65,7 +65,7 @@ public class Evolver<Indiv extends FitIndiv> implements PopulationSolver<Indiv> 
     @Override
     public EvaledPop<Indiv> evalPop(List<Indiv> pop, int gen) {
         if (opts.isFitnessTogether()) {
-            return new TogetherEvaledPop<>(pop, opts.tFitness, gen, opts.comparator);
+            return new TogetherEvaledPop<>(pop, opts.tFitness, gen, opts.comparator, opts.logger);
         } else {
             return new BasicEvaledPop<>(pop, opts.fitness, gen);
         }
