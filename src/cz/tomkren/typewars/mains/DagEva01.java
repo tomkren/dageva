@@ -42,7 +42,7 @@ public class DagEva01 {
 
         IndivGenerator<PolyTree> gen = new SimplePolyTreeGenerator(goalType, generatingMaxTreeSize, querySolver);
         Distribution<Operator<PolyTree>> operators = new Distribution<>(Arrays.asList(
-                new BasicTypedXover(0.5, rand),
+                new BasicTypedXover(0.5, 50, rand),
                 new SameSizeSubtreeMutation(0.4, querySolver,generatingMaxTreeSize),
                 new CopyOp<>(0.1)
         ));
@@ -52,7 +52,7 @@ public class DagEva01 {
 
         Logger<PolyTree> logger = new DagEvolutionLogger();
 
-        Evolver<PolyTree> evolver = new Evolver.Opts<>(fitness, evoOpts, gen, operators, selection, logger, rand).mk();
+        Evolver<PolyTree> evolver = new Evolver.Opts<>(fitness, null, evoOpts, gen, operators, selection, logger, rand).mk();
 
         Log.it("Generating initial population...");
         evolver.startRun();

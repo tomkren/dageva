@@ -43,7 +43,11 @@ public class Checker {
         startTime = System.nanoTime();
     }
     private void showTime() {
-        Log.it("It took "+(System.nanoTime()-startTime)/1E9 +" seconds...");
+        Log.it("It took "+getTime() +" seconds...");
+    }
+
+    public double getTime() {
+        return (System.nanoTime()-startTime)/1E9;
     }
 
     public Random getRandom() {

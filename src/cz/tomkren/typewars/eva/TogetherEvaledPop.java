@@ -3,6 +3,8 @@ package cz.tomkren.typewars.eva;
 import cz.tomkren.helpers.F;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /** Created by tom on 1. 7. 2015. */
@@ -12,11 +14,17 @@ public class TogetherEvaledPop<Indiv extends FitIndiv> implements EvaledPop<Indi
     private Distribution<Indiv> popDist;
     private List<Indiv> terminators;
 
-    public TogetherEvaledPop(List<Indiv> pop, TogetherFitFun tFitness, int gen) {
+    public TogetherEvaledPop(List<Indiv> pop, TogetherFitFun tFitness, int gen, Comparator<Indiv> comparator) {
         tFitness.initGeneration(gen);
         terminators = new ArrayList<>();
 
         // TODO vyřešit "doRecomputeFitVal". Musí se odfiltrovat předtím, než se pošle do tFitness a pak je tam zas vložit ...
+
+        if (comparator != null) {
+            Collections.sort(pop, comparator);
+        }
+        //Log.list(F.map(pop, in -> ((PolyTree) in).toStringWithoutParams()  ));
+
 
         List<Object> objs = F.map(pop, FitIndiv::computeValue);
         List<FitVal> fitVals = tFitness.getFitVals(objs);

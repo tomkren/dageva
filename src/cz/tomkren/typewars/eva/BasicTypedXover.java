@@ -22,15 +22,16 @@ public class BasicTypedXover implements Operator<PolyTree> {
 
     private double operatorProbability;
     private final Random rand;
+    private final int maxTreeSize;
 
-
-    public BasicTypedXover(double operatorProbability, Random rand) {
+    public BasicTypedXover(double operatorProbability, int maxTreeSize, Random rand) {
         this.operatorProbability = operatorProbability;
+        this.maxTreeSize = maxTreeSize;
         this.rand = rand;
     }
 
     public BasicTypedXover(JSONObject config, Random rand) {
-        this(config.getJSONObject("basicTypedXover").getDouble("probability"),rand);
+        this(config.getJSONObject("basicTypedXover").getDouble("probability"),config.getJSONObject("basicTypedXover").getInt("maxTreeSize"),rand);
     }
 
     public AA<PolyTree> xover(PolyTree mum, PolyTree dad) {
@@ -46,7 +47,12 @@ public class BasicTypedXover implements Operator<PolyTree> {
         SubtreePos mumPos = selectedPoses._1();
         SubtreePos dadPos = selectedPoses._2();
 
-        return PolyTree.xover(mum, dad, mumPos, dadPos);
+        AA<PolyTree> children = PolyTree.xover(mum, dad, mumPos, dadPos);
+
+        return new AA<>(
+                children._1().getSize() <= maxTreeSize ? children._1() : mum ,
+                children._2().getSize() <= maxTreeSize ? children._2() : dad
+        );
     }
 
 
@@ -129,7 +135,7 @@ public class BasicTypedXover implements Operator<PolyTree> {
 
         int numTries = 100000;
 
-        BasicTypedXover xOver = new BasicTypedXover(1.0, ch.getRandom());
+        BasicTypedXover xOver = new BasicTypedXover(1.0, 50, ch.getRandom());
 
         Map<String,Integer> combos = new TreeMap<>(QuerySolver.compareStrs);
 

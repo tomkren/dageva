@@ -1,6 +1,7 @@
 package cz.tomkren.typewars.eva;
 
 import cz.tomkren.helpers.AA;
+import cz.tomkren.helpers.Checker;
 import cz.tomkren.helpers.F;
 import cz.tomkren.helpers.Log;
 import cz.tomkren.kutil2.items.Int2D;
@@ -16,13 +17,17 @@ import java.util.List;
 
 public class DagEvolutionLogger implements Logger<PolyTree> {
 
-
     private final File runLogDir;
+    private final File parsableSubDir;
+    private final Checker checker;
 
-    public DagEvolutionLogger(JSONObject config, String logPath) {
+    public DagEvolutionLogger(JSONObject config, String logPath, Checker checker) {
+
+        this.checker = checker;
 
         if (logPath == null) {
             runLogDir = null;
+            parsableSubDir = null;
             return;
         }
 
@@ -40,24 +45,30 @@ public class DagEvolutionLogger implements Logger<PolyTree> {
         }
 
         runLogDir = new File(logPath,"run_"+i);
+        parsableSubDir = new File(runLogDir, "parsable");
 
 
-        boolean success = runLogDir.mkdir();
+        boolean success1 = runLogDir.mkdir();
+        boolean success2 = parsableSubDir.mkdir();
 
-        if (!success) {
+        if (!success1 || !success2) {
             throw new Error("Unable to create log directory!");
         }
 
 
         Log.it("log directory for this run: "+runLogDir);
 
-        writeToFile("config.txt", config.toString(2));
+        writeToFile("config.json", config.toString(2));
 
     }
 
     private void writeToFile(String filename, String str) {
+        writeToFile(new File(runLogDir, filename),str);
+    }
 
-        try (Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(new File(runLogDir, filename)), "utf-8"))) {
+    private void writeToFile(File file, String str) {
+
+        try (Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), "utf-8"))) {
             writer.write(str);
             writer.write('\n');
         } catch (IOException e) {
@@ -67,24 +78,24 @@ public class DagEvolutionLogger implements Logger<PolyTree> {
     }
 
     public DagEvolutionLogger() {
-        this(null,null);
+        this(null,null,null);
     }
 
     @Override
     public void logPop(int run, int generation, EvaledPop<PolyTree> pop) {
         PolyTree best = pop.getBestIndividual();
-        Log.it("gen" + generation + " \t best: [" + best.getProbability() + "] " + best);
+        Log.it("gen_" + generation);
         Log.it(pop);
 
         if (runLogDir != null) {
 
-            AA<JSONArray> twoJsons = evaledPopToJson(pop);
-            JSONArray readable = twoJsons._1();
-            JSONArray parsable = twoJsons._2();
+            AA<JSONObject> twoJsons = evaledPopToJson(pop);
+            JSONObject readable = twoJsons._1();
+            JSONObject parsable = twoJsons._2();
 
-            writeToFile("gen_" + generation + "_readable.txt", readable.toString(2));
-            writeToFile("gen_" + generation + "_parsable.txt", parsable.toString());
-            writeToFile("gen_" + generation + "_parsable2.txt", parsable.toString(2));
+            writeToFile("gen_" + generation + ".json" , readable.toString(2));
+            writeToFile(new File(parsableSubDir, "gen_" + generation +  "_dense.json"), parsable.toString());
+            writeToFile(new File(parsableSubDir, "gen_" + generation + "_indent.json"), parsable.toString(2));
         }
 
 
@@ -95,16 +106,24 @@ public class DagEvolutionLogger implements Logger<PolyTree> {
 
     }
 
-    public static AA<JSONArray> evaledPopToJson(EvaledPop<PolyTree> pop) {
+    public AA<JSONObject> evaledPopToJson(EvaledPop<PolyTree> pop) {
 
-        JSONArray readable = new JSONArray();
-        JSONArray parsable = new JSONArray();
-
+        JSONArray readablePop = new JSONArray();
+        JSONArray parsablePop = new JSONArray();
 
         for(AA<JSONObject> p:  F.map(F.sort(pop.getIndividuals().getList(), t -> -t.getFitVal().getVal()), DagEvolutionLogger::dagTreeIndividualToJson)) {
-            readable.put(p._1());
-            parsable.put(p._2());
+            readablePop.put(p._1());
+            parsablePop.put(p._2());
         }
+
+        JSONObject readable = new JSONObject();
+        JSONObject parsable = new JSONObject();
+
+        readable.put("time", checker.getTime());
+        readable.put("population", readablePop);
+
+        parsable.put("time", checker.getTime());
+        parsable.put("population", parsablePop);
 
         return new AA<>(readable,parsable);
     }

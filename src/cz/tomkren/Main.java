@@ -17,6 +17,7 @@ import org.json.JSONObject;
 
 import java.io.*;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Random;
 
 /** Created by tom on 6.7.2015. */
@@ -43,11 +44,11 @@ public class Main {
             JSONObject config = new JSONObject(configStr);
 
             Long seed = config.has("seed") ? config.getLong("seed") : null;
-            Checker ch = new Checker(seed);
-            Random rand = ch.getRandom();
+            Checker checker = new Checker(seed);
+            Random rand = checker.getRandom();
 
             if (seed == null) {
-                config.put("seed", ch.getSeed());
+                config.put("seed", checker.getSeed());
             }
 
             DataScientistFitness fitness = new DataScientistFitness(config.getString("serverUrl"), config.getString("dataset"), true);
@@ -66,7 +67,9 @@ public class Main {
                     new CopyOp<>(config)
             ));
 
-            Evolver<PolyTree> evolver = new Evolver.Opts<>(fitness, new EvoOpts(config), generator, operators, selection, new DagEvolutionLogger(config,logPath), rand).mk();
+            Comparator<PolyTree> comparator = (x,y) -> QuerySolver.compareTrees.compare(y,x);
+
+            Evolver<PolyTree> evolver = new Evolver.Opts<>(fitness, comparator, new EvoOpts(config), generator, operators, selection, new DagEvolutionLogger(config,logPath,checker), rand).mk();
 
             Log.it("Config [OK] ...");
             Log.it("Generating initial population...");
@@ -77,7 +80,7 @@ public class Main {
                 fitness.killServer();
             }
 
-            ch.results();
+            checker.results();
 
         } catch (IOException e) {
             Log.itln("Config file error: "+e.getMessage());
