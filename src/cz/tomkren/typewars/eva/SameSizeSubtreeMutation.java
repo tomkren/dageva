@@ -8,6 +8,7 @@ import cz.tomkren.typewars.SubtreePos;
 import cz.tomkren.typewars.Type;
 import cz.tomkren.typewars.reusable.QuerySolver;
 import cz.tomkren.typewars.SmartLib;
+import org.json.JSONObject;
 
 import java.util.List;
 import java.util.Random;
@@ -33,6 +34,9 @@ public class SameSizeSubtreeMutation extends PolyTreeMutation {
         rand = querySolver.getRand();
     }
 
+    public SameSizeSubtreeMutation(JSONObject config, QuerySolver querySolver) {
+        this(config.getJSONObject("sameSizeSubtreeMutation").getDouble("probability"), querySolver, config.getJSONObject("sameSizeSubtreeMutation").getInt("maxSubtreeSize"));
+    }
 
     public PolyTree mutate(PolyTree tree) {
         PolyTree mutant = null;

@@ -51,7 +51,7 @@ public class DataScientistFitness implements TogetherFitFun {
     public JSONObject getAllParamsInfo_mayThrowUp() throws XmlRpcException {
 
         String json = evaluator.getMethodParams(datasetFile);
-        Log.it(json);
+        Log.itln("allParamsInfo = "+ json);
         return new JSONObject(json);
 
     }

@@ -10,6 +10,7 @@ import cz.tomkren.typewars.Type;
 import cz.tomkren.typewars.reusable.QuerySolver;
 import cz.tomkren.typewars.SmartLib;
 import cz.tomkren.typewars.TMap;
+import org.json.JSONObject;
 
 import java.util.*;
 
@@ -26,6 +27,10 @@ public class BasicTypedXover implements Operator<PolyTree> {
     public BasicTypedXover(double operatorProbability, Random rand) {
         this.operatorProbability = operatorProbability;
         this.rand = rand;
+    }
+
+    public BasicTypedXover(JSONObject config, Random rand) {
+        this(config.getJSONObject("basicTypedXover").getDouble("probability"),rand);
     }
 
     public AA<PolyTree> xover(PolyTree mum, PolyTree dad) {

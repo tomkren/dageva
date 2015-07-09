@@ -1,5 +1,7 @@
 package cz.tomkren.typewars.eva;
 
+import org.json.JSONObject;
+
 public class EvoOpts {
 
     public static final EvoOpts DEFAULT = new EvoOpts(50, 51, 500, false);
@@ -30,6 +32,10 @@ public class EvoOpts {
 
     public EvoOpts(int numGens, int popSize, boolean saveBest) {
         this(1, numGens, popSize, saveBest);
+    }
+
+    public EvoOpts(JSONObject config) {
+        this(config.getInt("numGenerations"),config.getInt("populationSize"),config.getBoolean("saveBest"));
     }
 
     public int getNumRuns() {

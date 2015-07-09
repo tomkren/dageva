@@ -2,6 +2,7 @@ package cz.tomkren.typewars;
 
 
 import cz.tomkren.helpers.F;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.List;
@@ -25,8 +26,16 @@ public class SmartLib {
     }*/
 
 
-    public static SmartLib mk(JSONObject paramsInfo, String... codeNodeLines) {
-        return new SmartLib(CodeLib.mk(paramsInfo, codeNodeLines));
+    public static SmartLib mk(JSONObject allParamsInfo, String... codeNodeLines) {
+        return new SmartLib(CodeLib.mk(allParamsInfo, codeNodeLines));
+    }
+
+    public static SmartLib mk(JSONObject allParamsInfo, JSONArray codeNodeLines) {
+        String[] strLines = new String[codeNodeLines.length()];
+        for (int i = 0; i < codeNodeLines.length(); i++) {
+            strLines[i] = codeNodeLines.getString(i);
+        }
+        return mk(allParamsInfo, strLines);
     }
 
     public static SmartLib mk(String... codeNodeLines) {

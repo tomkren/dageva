@@ -1,9 +1,7 @@
 package cz.tomkren;
 
-
 import com.google.common.base.Charsets;
 import com.google.common.io.Files;
-import cz.tomkren.helpers.AB;
 import cz.tomkren.helpers.Checker;
 import cz.tomkren.helpers.Log;
 import cz.tomkren.typewars.PolyTree;
@@ -27,62 +25,57 @@ public class Main {
 
     public static void main(String[] args) {
 
-
         if (args.length < 2 || args[0].equals("--help")) {
-            Log.it("You must provide two arguments: <json-config-filename> <log-dir-path>");
+            Log.it("You must provide two program arguments: <json-config-filename> <log-dir-path>");
             return;
         }
 
-
-
-        String jsonConfigFileName = args[0];
+        String jsonConfigFilename = args[0];
         String logPath = args[1];
 
-        Log.it("jsonConfigFileName: "+ jsonConfigFileName);
-        Log.itln("logPath: "+ logPath);
+        Log.it("Program arguments:");
+        Log.it("  jsonConfigFileName : " + jsonConfigFilename);
+        Log.itln("  logPath            : " + logPath);
 
         try {
-            String jsonStr = Files.toString(new File(jsonConfigFileName), Charsets.UTF_8);
-
-            //Log.itln(jsonStr);
-
-            JSONObject config = new JSONObject(jsonStr);
-
-            Log.itln(config.toString(2));
+            String configStr = Files.toString(new File(jsonConfigFilename), Charsets.UTF_8);
+            Log.itln(jsonConfigFilename +" = "+ configStr);
+            JSONObject config = new JSONObject(configStr);
 
             Long seed = config.has("seed") ? config.getLong("seed") : null;
-
             Checker ch = new Checker(seed);
             Random rand = ch.getRandom();
 
-            DataScientistFitness fitness = new DataScientistFitness(config.getString("serverUrl"), config.getString("dataset"), true);
-            EvoOpts evoOpts = new EvoOpts(config.getInt("numGenerations"),config.getInt("populationSize"),config.getBoolean("saveBest"));
+            if (seed == null) {
+                config.put("seed", ch.getSeed());
+            }
 
-            SmartLib lib = SmartLib.mkDataScientistLib01FromParamsInfo(fitness.getAllParamsInfo_mayThrowUp());
-            QuerySolver querySolver = new QuerySolver(lib, rand);
+            DataScientistFitness fitness = new DataScientistFitness(config.getString("serverUrl"), config.getString("dataset"), true);
+            JSONObject allParamsInfo = fitness.getAllParamsInfo_mayThrowUp();
+
+            SmartLib lib = SmartLib.mk(allParamsInfo, config.getJSONArray("lib")); //SmartLib.mkDataScientistLib01FromParamsInfo();
             Type goalType = Types.parse(config.getString("goalType"));
+            QuerySolver querySolver = new QuerySolver(lib, rand);
 
             IndivGenerator<PolyTree> generator = new RandomParamsPolyTreeGenerator(goalType, config.getInt("generatingMaxTreeSize"), querySolver);
             Selection<PolyTree> selection = new Selection.Tournament<>(config.getDouble("tournamentBetterWinsProbability"), rand);
             Distribution<Operator<PolyTree>> operators = new Distribution<>(Arrays.asList(
-                    new BasicTypedXover(config.getDouble("basicTypedXoverProbability"), rand),
-                    new SameSizeSubtreeMutation(config.getDouble("sameSizeSubtreeMutationProbability"), querySolver, config.getInt("mutationMaxSubtreeSize")),
-                    new OneParamMutation(config.getDouble("oneParamMutationProbability"), ch.getRandom(), Arrays.asList(
-                            AB.mk(-2, 0.1),
-                            AB.mk(-1, 0.4),
-                            AB.mk(1, 0.4),
-                            AB.mk(2, 0.1)
-                    )),
-                    new CopyOp<>(config.getDouble("copyOpProbability"))
+                    new BasicTypedXover(config, rand),
+                    new SameSizeSubtreeMutation(config, querySolver),
+                    new OneParamMutation(config, rand),
+                    new CopyOp<>(config)
             ));
 
-            Evolver<PolyTree> evolver = new Evolver.Opts<>(fitness, evoOpts, generator, operators, selection, new PolyTreeEvolutionLogger(), rand).mk();
+            Evolver<PolyTree> evolver = new Evolver.Opts<>(fitness, new EvoOpts(config), generator, operators, selection, new DagEvolutionLogger(config,logPath), rand).mk();
 
+            Log.it("Config [OK] ...");
             Log.it("Generating initial population...");
+
             evolver.startRun();
 
-
-            fitness.killServer();
+            if (config.getBoolean("killServer")) {
+                fitness.killServer();
+            }
 
             ch.results();
 
@@ -94,9 +87,5 @@ public class Main {
             Log.it("Dag-evaluate server error: Server is probably not running (or it is starting right now). Start the server and try again, please.");
         }
 
-
     }
-
-
-
 }

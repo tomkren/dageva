@@ -50,7 +50,7 @@ public class DagEva01 {
         //Selection<PolyTree> selection = new Selection.Roulette<>(rand);
         Selection<PolyTree> selection = new Selection.Tournament<>(0.8, rand);
 
-        Logger<PolyTree> logger = new PolyTreeEvolutionLogger();
+        Logger<PolyTree> logger = new DagEvolutionLogger();
 
         Evolver<PolyTree> evolver = new Evolver.Opts<>(fitness, evoOpts, gen, operators, selection, logger, rand).mk();
 

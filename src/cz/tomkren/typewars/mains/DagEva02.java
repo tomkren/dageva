@@ -54,7 +54,7 @@ public class DagEva02 {
                 new CopyOp<>(0.1)
         ));
 
-        Evolver<PolyTree> evolver = new Evolver.Opts<>(fitness, new EvoOpts(numGenerations,populationSize,saveBest), generator, operators, selection, new PolyTreeEvolutionLogger(), rand).mk();
+        Evolver<PolyTree> evolver = new Evolver.Opts<>(fitness, new EvoOpts(numGenerations,populationSize,saveBest), generator, operators, selection, new DagEvolutionLogger(), rand).mk();
 
         Log.it("Generating initial population...");
         evolver.startRun();
