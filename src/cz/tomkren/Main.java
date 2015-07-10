@@ -26,7 +26,7 @@ public class Main {
 
     public static void main(String[] args) {
 
-        Log.it("dageva [v0.3]");
+        Log.it("dageva [v0.4]");
 
 
         if (args.length < 2 || args[0].equals("--help")) {

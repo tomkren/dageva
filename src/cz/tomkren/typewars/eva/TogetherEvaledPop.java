@@ -44,9 +44,9 @@ public class TogetherEvaledPop<Indiv extends FitIndiv> implements EvaledPop<Indi
 
             logger.logErrorIndivs(gen, koObjs);
 
-            System.err.println("\n\n\n ERROR individuals !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+            System.err.println("ERROR individual(s) !!!");
 
-            Log.itln("\n\n\n\n ERROR individuals !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n\n\n\n");
+            Log.itln("\n\n\n\n ERROR individual(s) !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n\n\n\n");
             Log.list(F.map(koObjs, o -> ((TypedDag) o).toJson()));
             Log.itln("\n\n\n\n");
 
@@ -70,7 +70,7 @@ public class TogetherEvaledPop<Indiv extends FitIndiv> implements EvaledPop<Indi
 
                 Indiv ind = pop.get(i);
 
-                if (!((TypedDag) ind.computeValue()).isMalformed()) {
+                if ( ! ((TypedDag)objs.get(i)).isMalformed() && j < fitVals.size() ) {
 
                     newPop_errorCase.add(ind);
 

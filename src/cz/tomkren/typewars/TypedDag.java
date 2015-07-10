@@ -167,7 +167,7 @@ public class TypedDag {
     }
 
     public static TypedDag paraList_noCopy(List<TypedDag> dags) {
-        return F.reduce(dags, (x,y)->x.para(y));
+        return F.reduce(dags, (x, y) -> x.para(y));
     }
 
     public TypedDag para(TypedDag dag2) {
@@ -266,13 +266,15 @@ public class TypedDag {
         while (!vSet.isEmpty()) {
             Set<Vertex> vSet_new = new HashSet<>();
             for (Vertex v1 : vSet) {
+
                 f.accept(v1);
                 processed.add(v1);
-                v1.getSuccessors().forEach(v2 -> {
-                    if (!processed.contains(v2)) {
+
+                for (Vertex v2 : v1.getSuccessors()) {
+                    if (!processed.contains(v2) && !vSet.contains(v2)) {
                         vSet_new.add(v2);
                     }
-                });
+                }
             }
             vSet = vSet_new;
         }
@@ -425,14 +427,20 @@ public class TypedDag {
         List<SimpleVertex> end    = new ArrayList<>();
 
         forEachVertex(v -> {
-            AB<SimpleVertex, Vertex.Info> p =  v.toSimpleVertex();
+            AB<SimpleVertex, Vertex.Info> p = v.toSimpleVertex();
             SimpleVertex sv = p._1();
             Vertex.Info vInfo = p._2();
 
             switch (vInfo) {
-                case BEGIN  : begin.add(sv); break;
-                case MIDDLE : middle.add(sv); break;
-                case END : end.add(sv); break;
+                case BEGIN:
+                    begin.add(sv);
+                    break;
+                case MIDDLE:
+                    middle.add(sv);
+                    break;
+                case END:
+                    end.add(sv);
+                    break;
             }
 
         });
@@ -483,6 +491,21 @@ public class TypedDag {
         return isMalformed;
     }
 
+
+
+    public boolean isMalformed_fake1() {
+        int[] n = new int[1];
+        n[0] = 0;
+        forEachVertex(v -> {
+            n[0]++;
+        });
+        return n[0]%3 == 0;
+    }
+
+    public boolean isMalformed_fake2() {
+        return Math.random() < 0.2;
+    }
+
     public String toJson() {
         StringBuilder sb = new StringBuilder();
         sb.append("{\n  ");
@@ -492,7 +515,6 @@ public class TypedDag {
         Set<Integer> ids = new HashSet<>();
 
         forEachVertex(v -> {
-            sb.append("  ");
 
             int vId = v.getId();
             if (ids.contains(vId)) {
@@ -500,8 +522,10 @@ public class TypedDag {
             }
             ids.add(vId);
 
+            sb.append("  ");
             v.toJson(sb);
             sb.append(",\n");
+
         });
         F.deleteLast(sb,2);
 
