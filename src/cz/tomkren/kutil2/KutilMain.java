@@ -41,6 +41,10 @@ public class KutilMain {
         new Kutil().start(XmlLoader.LoadMethod.STRING, wrapInKutilShower(mkFrameWith(dag.toKutilXML(new Int2D(64, 64)))));
     }
 
+    public static void showDag(String dagXml) {
+        new Kutil().start(XmlLoader.LoadMethod.STRING, wrapInKutilShower(mkFrameWith(dagXml)));
+    }
+
     public static void showDags(List<TypedDag> dags) {
         StringBuilder sb = new StringBuilder();
 
