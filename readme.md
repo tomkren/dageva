@@ -1,5 +1,5 @@
-Dageva
-======
+Dageva (Evolution client for GP-ML)
+===================================
 
  Dageva is a tool for automatic construction of machine learning workflows/ensembles by evolving them using genetic programming.
  Here we explain how to use it.
@@ -62,26 +62,26 @@ Config file
   * __numGenerations__ : Number of evolution generations. (int)
   * __populationSize__ : Number of individuals in each generation. (int)
   * __generatingMaxTreeSize__ : Maximal permitted size (number of symbols) in generated program trees. (int)
-  * __tournamentBetterWinsProbability__ : parameter controlling randomness of the tournament individual selection method. (float from [0,1])
+  * __tournamentBetterWinsProbability__ : parameter controlling randomness of the tournament individual selection method. (float from \[0,1\])
   * __saveBest__ : Whether the best individual is automatically preserved to the next generation. (bool)  
   * __basicTypedXover__ : Options for the tree-swapping crossover operation. (object)
-    * __probability__ : Probability of using this genetic operation. (float from [0,1])
+    * __probability__ : Probability of using this genetic operation. (float from \[0,1\])
     * __maxTreeSize__ : Maximal size of an individual produced by this operation. (int)
   * __sameSizeSubtreeMutation__ : Options for the subtree-generating  mutation operation. (object)
-    * __probability__ : Probability of using this genetic operation. (float from [0,1])
-    * __maxSubtreeSize__ : Maximal allowed size of selected subtree to be replaced by newly generated subtree with the same size. (float from [0,1]) 
+    * __probability__ : Probability of using this genetic operation. (float from \[0,1\])
+    * __maxSubtreeSize__ : Maximal allowed size of selected subtree to be replaced by newly generated subtree with the same size. (float from \[0,1\]) 
   * __oneParamMutation__ : Options for the mutation operation that changes one numerical parameter. (object)
-    * __probability__ : Probability of using this genetic operation. (float from [0,1])
+    * __probability__ : Probability of using this genetic operation. (float from \[0,1\])
     * __shiftsWithProbabilities__  : Each numerical parameter is associated with an ordered list of possible values.
                                      This option specifies possible changes of values given as an array of possible
-                                     "shifts" of values. It is an array of pairs (i.e. 2-elemt arrays) of a form [shift,probability].
-                                     For example if the option is set to [[-2, 0.1], [-1, 0.4], [1, 0.4], [2, 0.1]] 
-                                     and a parameter has the list of possible values [0.01, 0.05, 0.1, 0.2, 0.5, 1]
+                                     "shifts" of values. It is an array of pairs (i.e. 2-elemt arrays) of a form \[shift,probability\].
+                                     For example if the option is set to \[\[-2, 0.1], \[-1, 0.4\], \[1, 0.4\], \[2, 0.1\]\] 
+                                     and a parameter has the list of possible values \[0.01, 0.05, 0.1, 0.2, 0.5, 1\]
                                      and the current value is 0.1, the mutation with probability 0.4 changes the value to 0.05,
                                      with probability 0.4 to 0.2, with probability 0.1 to 0.01 and with probability 0.1 to 0.5. 
-                                     (array of [int,float] pairs)
+                                     (array of \[int,float\] pairs)
   * __copyOp__ : Options for the genetic operation "reproduction" that makes an exact copy of the selected individual. (object)
-    * __probability__ : Probability of using this genetic operation. (float from [0,1])
+    * __probability__ : Probability of using this genetic operation. (float from \[0,1\])
     
   * __goalType__ : The type of the program tree individual representing the generated workflow.  (string)
   * __lib__ : Symbols (functions and terminals) from which are the individual program trees build. 
@@ -136,12 +136,14 @@ Example of a config file:
 
 
 
-Clent server communication
---------------------------
+Client server communication
+---------------------------
 
 __todo__ Zlehka o technikalitách 
  * jak se posílaj parametry 
-   *  allParamsInfo = {"kBest": {"feat_frac": [0.01, 0.05, 0.1, 0.25, 0.5, 0.75, 1]}, "copy": {}, "DT": {"max_features": [0.05, 0.1, 0.25, 0.5, 0.75, 1], "max_depth": [1, 2, 5, 10, 15, 25, 50, 100], "min_samples_leaf": [1, 2, 5, 10, 20], "criterion": ["gini", "entropy"], "min_samples_split": [1, 2, 5, 10, 20]}, "logR": {"penalty": ["l1", "l2"], "C": [0.1, 0.5, 1.0, 2, 5, 10, 15], "tol": [0.0001, 0.001, 0.01]}, "PCA": {"whiten": [false, true], "feat_frac": [0.01, 0.05, 0.1, 0.25, 0.5, 0.75, 1]}, "union": {}, "kMeans": {}, "vote": {}, "gaussianNB": {}, "SVC": {"C": [0.1, 0.5, 1.0, 2, 5, 10, 15], "tol": [0.0001, 0.001, 0.01], "gamma": [0.0, 0.0001, 0.001, 0.01, 0.1, 0.5]}}
+   *  allParamsInfo = {"kBest": {"feat_frac": \[0.01, 0.05, 0.1, 0.25, 0.5, 0.75, 1\]}, "copy": {}, "DT": {"max_features": \[0.05, 0.1, 0.25, 0.5, 0.75, 1\], "max_depth": \[1, 2, 5, 10, 15, 25, 50, 100\], "min_samples_leaf": \[1, 2, 5, 10, 20\],
+      "criterion": \["gini", "entropy"\], "min_samples_split": \[1, 2, 5, 10, 20\]}, "logR": {"penalty": \["l1", "l2"\], "C": \[0.1, 0.5, 1.0, 2, 5, 10, 15\], "tol": \[0.0001, 0.001, 0.01]}, "PCA": {"whiten": \[false, true\], 
+      "feat_frac": \[0.01, 0.05, 0.1, 0.25, 0.5, 0.75, 1\]}, "union": {}, "kMeans": {}, "vote": {}, "gaussianNB": {}, "SVC": {"C": \[0.1, 0.5, 1.0, 2, 5, 10, 15\], "tol": \[0.0001, 0.001, 0.01\], "gamma": \[0.0, 0.0001, 0.001, 0.01, 0.1, 0.5\]}}
  * jak se posílaj dagy
 
 
