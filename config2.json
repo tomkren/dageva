@@ -27,15 +27,11 @@
     "TypedDag.split( TypedDag: D => (V D n) , MyList: V (D => LD) n ) : D => (V LD n)",
     "MyList.cons( Object: a , MyList: V a n ) : V a (S n)",
     "MyList.nil : V a 0",
-    "PCA : D => D",
-    "kBest : D => D",
-    "kMeans : D => (V D (S(S n)))",
-    "copy : D => (V D (S(S n)))",
-    "SVC        : D => LD",
-    "logR       : D => LD",
-    "gaussianNB : D => LD",
-    "DT         : D => LD",
-    "vote : (V LD (S(S n))) => LD",
+
+    "pre : D => D",
+    "splitter : D => (V D (S(S n)))",
+    "method : D => LD",
+    "merger : (V LD (S(S n))) => LD",
 
     "TypedDag.stacking( TypedDag: (V LD n) => D , TypedDag: D => LD ) : (V LD n) => LD",
     "stacker : (V LD (S(S n))) => D"

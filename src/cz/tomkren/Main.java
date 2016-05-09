@@ -24,9 +24,13 @@ import java.util.Random;
 
 public class Main {
 
+
+    public static final String VERSION = "v0.5 beta";
+
+
     public static void main(String[] args) {
 
-        Log.it("dageva [v0.4]");
+        Log.it("dageva ["+ VERSION +"]");
 
 
         if (args.length < 2 || args[0].equals("--help")) {
