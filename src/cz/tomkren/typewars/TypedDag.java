@@ -140,6 +140,10 @@ public class TypedDag {
         return dag.copy().seri(fromMyList(dagList));
     }
 
+    public static TypedDag stacking(TypedDag stacker, TypedDag method) {
+        return stacker.copy().seri(method.copy());
+    }
+
     public static TypedDag fromMyList(MyList dagList) {
         List<TypedDag> dags = dagList.toList(TypedDag.class);
         return paraList(dags);
