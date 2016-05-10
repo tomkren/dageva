@@ -129,7 +129,7 @@ public class CodeNodeWithParams extends CodeNode {
             Type t = (Type) haxTypeInput.get(0);
             AA<Type> p = TypedDag.getBoxInOutTypes(t);
             //Log.it("BOND HERE! "+params);
-            return new TypedDag(name, p._1(), p._2(), params);
+            return new TypedDag(name, p._1(), p._2(), params, null);
         });
 
 

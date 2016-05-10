@@ -46,7 +46,7 @@ public class ShapeFactory {
             return new RectangleShape( new Int2D( x,y ), Color.black );
         }
 
-        if ("f".equals(shapeName)) {
+        if ("f".equals(shapeName) || "f_b".equals(shapeName)) {
 
             int numInputs  = 1;
             int numOutputs = 1;
@@ -73,7 +73,7 @@ public class ShapeFactory {
             }
 
 
-            return new FunctionShape(numInputs, numOutputs, name, targets, kutil);
+            return new FunctionShape(numInputs, numOutputs, name, targets, shapeName.equals("f_b") ,kutil);
         }
 
         /* TODO !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! */

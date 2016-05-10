@@ -19,15 +19,17 @@ public class FunctionShape extends ConvexPolygonShape {
     private List<AB<String,Integer>> targets;
     private Kutil kutil;
 
+    private boolean isBlack;
 
-
-    public FunctionShape(int numInputs, int numOutputs, String name, List<AB<String,Integer>> targets, Kutil kutil) {
+    public FunctionShape(int numInputs, int numOutputs, String name, List<AB<String,Integer>> targets, boolean isBlack, Kutil kutil) {
         super(null, new Int2D(0,0), null, Color.lightGray);
         this.numInputs  = numInputs;
         this.numOutputs = numOutputs;
         this.name = name;
         this.targets = targets;
         this.kutil = kutil;
+
+        this.isBlack = isBlack;
 
         initVs(mkVs(numInputs, numOutputs));
     }
@@ -38,10 +40,18 @@ public class FunctionShape extends ConvexPolygonShape {
     private static final Color inputColor  = new Color(250,250,250);
     private static final Color outputColor = new Color(250,250,250);
     private static final Color bodyColor   = new Color(253,253,254);
+    private static final Color bodyColor_black   = new Color(3,3,4);
 
     private static final Color linkColor = Color.gray;
     private static final Color littleArrowColor = Color.lightGray;
 
+    public Color getBodyColor() {
+        return isBlack ? bodyColor_black : bodyColor;
+    }
+
+    public Color getTextColor() {
+        return isBlack ? Color.white : Color.black;
+    }
 
 
 
@@ -132,7 +142,7 @@ public class FunctionShape extends ConvexPolygonShape {
         g.setColor(outputColor);
         zoomFill(g, out_poly_x, out_poly_y);
 
-        g.setColor(bodyColor);
+        g.setColor(getBodyColor());
         zoomFill(g, body_poly_x, body_poly_y);
 
 
@@ -227,7 +237,7 @@ public class FunctionShape extends ConvexPolygonShape {
                 int[] poly_x = new int[] {a_x, b_x, c_x, d_x};
                 int[] poly_y = new int[] {a_y, b_y, c_y, d_y};
 
-                g.setColor(bodyColor);
+                g.setColor(getBodyColor());
                 zoomFill(g, poly_x, poly_y);
 
                 g.setColor(Color.lightGray);
@@ -242,7 +252,7 @@ public class FunctionShape extends ConvexPolygonShape {
 
 
             g.setFont(font);
-            g.setColor(Color.black);
+            g.setColor(getTextColor());
             g.drawString(name, xZoomIt(str_x), yZoomIt(str_y));
 
         }

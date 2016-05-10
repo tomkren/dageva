@@ -7,8 +7,8 @@
 
   "numGenerations": 10,
 
-  "populationSize": 100,
-  "generatingMaxTreeSize":  23,
+  "populationSize": 10,
+  "generatingMaxTreeSize":  42,
 
   "tournamentBetterWinsProbability" : 0.8,
   "saveBest" : true,
@@ -28,19 +28,18 @@
     "MyList.cons( Object: a , MyList: V a n ) : V a (S n)",
     "MyList.nil : V a 0",
 
-    "pre : D => D",
-    "splitter : D => (V D (S(S n)))",
-    "method : D => LD",
-    "merger : (V LD (S(S n))) => LD",
+    "PCA : D => D",
+    "kBest : D => D",
+    "kMeans : D => (V D (S(S n)))",
+    "copy : D => (V D (S(S n)))",
+    "SVC        : D => LD",
+    "logR       : D => LD",
+    "gaussianNB : D => LD",
+    "DT         : D => LD",
+    "vote : (V LD (S(S n))) => LD",
 
     "TypedDag.stacking( TypedDag: (V LD n) => D , TypedDag: D => LD ) : (V LD n) => LD",
-    "stacker : (V LD (S(S n))) => D",
-
-    "TypedDag.boosting( TypedDag: D => Boo , MyList: V (Boo => Boo) (S(S n)) , TypedDag : Boo => LD ) : D => LD",
-    "booBegin : D => Boo",
-    "booster  : Boo => Boo",
-    "booEnd   : Boo => LD"
-
+    "stacker : (V LD (S(S n))) => D"
   ]
 
 }

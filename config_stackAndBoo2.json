@@ -8,7 +8,7 @@
   "numGenerations": 10,
 
   "populationSize": 100,
-  "generatingMaxTreeSize":  23,
+  "generatingMaxTreeSize":  42,
 
   "tournamentBetterWinsProbability" : 0.8,
   "saveBest" : true,
@@ -38,7 +38,7 @@
 
     "TypedDag.boosting( TypedDag: D => Boo , MyList: V (Boo => Boo) (S(S n)) , TypedDag : Boo => LD ) : D => LD",
     "booBegin : D => Boo",
-    "booster  : Boo => Boo",
+    "TypedDag.booster( TypedDag : D => LD ) : Boo => Boo",
     "booEnd   : Boo => LD"
 
   ]
