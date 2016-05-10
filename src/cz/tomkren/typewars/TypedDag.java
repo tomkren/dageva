@@ -140,9 +140,47 @@ public class TypedDag {
         return dag.copy().seri(fromMyList(dagList));
     }
 
+
+    // -- new in 0.5 --
+
     public static TypedDag stacking(TypedDag stacker, TypedDag method) {
         return stacker.copy().seri(method.copy());
     }
+
+
+    /*
+
+    TypedDag.boosting( TypedDag: D => Boo , MyList: V (Boo => Boo) n , TypedDag : Boo => LD ) : D => LD",
+    booBegin : D => Boo
+    booEnd   : Boo => LD
+    booster  : Boo => Boo
+    */
+
+    public static TypedDag boosting(TypedDag booBegin, MyList boosterList, TypedDag booEnd) {
+        TypedDag boosterChain = fromBoosterList(boosterList);
+        return booBegin.copy().seri(boosterChain).seri(booEnd.copy());
+    }
+
+    private static TypedDag fromBoosterList(MyList boosterList) {
+        List<TypedDag> boosters = boosterList.toList(TypedDag.class);
+        return serialList(boosters);
+    }
+
+    private static TypedDag serialList(List<TypedDag> dags) {
+        if (dags.isEmpty()) {return null;}
+
+        Iterator<TypedDag> it = dags.iterator();
+        TypedDag acc = it.next().copy();
+
+        while (it.hasNext()) {
+            acc = acc.seri(it.next().copy());
+        }
+        return acc;
+    }
+
+
+    // -- (end) new in 0.5
+
 
     public static TypedDag fromMyList(MyList dagList) {
         List<TypedDag> dags = dagList.toList(TypedDag.class);

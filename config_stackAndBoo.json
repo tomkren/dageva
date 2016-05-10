@@ -6,9 +6,9 @@
   "dataset" : "winequality-white.csv",
 
   "numGenerations": 10,
-  "populationSize": 3,
 
-  "generatingMaxTreeSize":  15,
+  "populationSize": 1000,
+  "generatingMaxTreeSize":  42,
 
   "tournamentBetterWinsProbability" : 0.8,
   "saveBest" : true,
@@ -27,23 +27,19 @@
     "TypedDag.split( TypedDag: D => (V D n) , MyList: V (D => LD) n ) : D => (V LD n)",
     "MyList.cons( Object: a , MyList: V a n ) : V a (S n)",
     "MyList.nil : V a 0",
-    "PCA : D => D",
-    "kBest : D => D",
-    "kMeans : D => (V D (S(S n)))",
-    "copy : D => (V D (S(S n)))",
-    "SVC        : D => LD",
-    "logR       : D => LD",
-    "gaussianNB : D => LD",
-    "DT         : D => LD",
-    "vote : (V LD (S(S n))) => LD",
+
+    "pre : D => D",
+    "splitter : D => (V D (S(S n)))",
+    "method : D => LD",
+    "merger : (V LD (S(S n))) => LD",
 
     "TypedDag.stacking( TypedDag: (V LD n) => D , TypedDag: D => LD ) : (V LD n) => LD",
     "stacker : (V LD (S(S n))) => D",
 
-    "TypedDag.boosting( TypedDag: D => Boo , MyList: V (Boo => Boo) n , TypedDag : Boo => LD ) : D => LD",
+    "TypedDag.boosting( TypedDag: D => Boo , MyList: V (Boo => Boo) (S(S n)) , TypedDag : Boo => LD ) : D => LD",
     "booBegin : D => Boo",
-    "booEnd   : Boo => LD",
-    "booster  : Boo => Boo"
+    "booster  : Boo => Boo",
+    "booEnd   : Boo => LD"
 
   ]
 

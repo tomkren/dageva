@@ -26,7 +26,9 @@ public class Tester {
     public static void main(String[] args) {
 
 
-        String jsonConfigFilename =  "config_stacking.json" ; // "config.json"; //
+        //String jsonConfigFilename =  "config.json" ;
+        //String jsonConfigFilename =  "config_stacking.json" ;
+        String jsonConfigFilename =  "config_stackAndBoo.json" ;
 
 
         try {
