@@ -91,12 +91,15 @@ public class QuerySolver {
         return uniformGenerate( (type,treeSize) -> this.generateOneWithParams(skeletonTree, type, treeSize) , goalType, maxTreeSize, numToGenerate);
     }
 
-    // TODO přidat limit po kterym to nebude čekovat unikátnost !!!!!!!!!!!!!
+
 
     public List<PolyTree> uniformGenerate(BiFunction<Type,Integer,PolyTree> genOneFun, Type goalType, int maxTreeSize, int numToGenerate) {
         Set<PolyTree> treeSet = new TreeSet<>(compareTrees);
 
-        while (treeSet.size() < numToGenerate) {
+        int limit = 23 * numToGenerate; // TODO líp paramaterizovat limit pro čekování unikátnosti
+        int i = 0;
+
+        while (treeSet.size() < numToGenerate  &&  i < limit) {
 
             int treeSize = rand.nextInt(maxTreeSize + 1);
             PolyTree tree = genOneFun.apply(goalType, treeSize);
@@ -106,6 +109,8 @@ public class QuerySolver {
                     treeSet.add(tree);
                 }
             }
+
+            i++;
         }
 
         return new ArrayList<>(treeSet);
@@ -137,6 +142,8 @@ public class QuerySolver {
     public PolyTree generateOne(String goalType, int treeSize) {
         return generateOne(Types.parse(goalType), treeSize);
     }
+
+    // TODO generateAll zlobí !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
     public TMap<PolyTree> generateAllUpTo(String goalType, int upToTreeSize) {
         Log.it("generateAllUpTo("+goalType+", "+upToTreeSize+")");

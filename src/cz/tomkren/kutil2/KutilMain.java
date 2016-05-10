@@ -48,7 +48,7 @@ public class KutilMain {
     public static void showDags(List<TypedDag> dags) {
         StringBuilder sb = new StringBuilder();
 
-        int width = 16000;
+        int width = (int)( 18000 / Math.sqrt(1000) * Math.sqrt(dags.size()) ) ; //16000;
         int okraj = 20;
         int init  = 3*okraj;
 

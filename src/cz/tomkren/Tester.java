@@ -3,12 +3,13 @@ package cz.tomkren;
 import com.google.common.base.Charsets;
 import com.google.common.io.Files;
 import cz.tomkren.helpers.Checker;
+import cz.tomkren.helpers.F;
 import cz.tomkren.helpers.Log;
+import cz.tomkren.kutil2.KutilMain;
 import cz.tomkren.typewars.*;
 import cz.tomkren.typewars.eva.IndivGenerator;
 import cz.tomkren.typewars.eva.RandomParamsPolyTreeGenerator;
 import cz.tomkren.typewars.reusable.QuerySolver;
-import org.apache.xmlrpc.XmlRpcException;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -25,7 +26,7 @@ public class Tester {
     public static void main(String[] args) {
 
 
-        String jsonConfigFilename = "config2.json" ;
+        String jsonConfigFilename =  "config_stacking.json" ; // "config.json"; //
 
 
         try {
@@ -47,18 +48,31 @@ public class Tester {
 
             SmartLib lib = SmartLib.mk(allParamsInfo, config.getJSONArray("lib")); //SmartLib.mkDataScientistLib01FromParamsInfo();
             String goalTypeStr = config.getString("goalType");
+            Type goalType = Types.parse(goalTypeStr);
             QuerySolver querySolver = new QuerySolver(lib, rand);
 
-            //IndivGenerator<PolyTree> generator = new RandomParamsPolyTreeGenerator(goalType, config.getInt("generatingMaxTreeSize"), querySolver);
+            IndivGenerator<PolyTree> generator = new RandomParamsPolyTreeGenerator(goalType, config.getInt("generatingMaxTreeSize"), querySolver);
 
-            int upToTreeSize = 20;
-
+            /*int upToTreeSize = 20;
             TMap<PolyTree> treeTMap = querySolver.generateAllUpTo(goalTypeStr, upToTreeSize);
-            List<PolyTree> trees = treeTMap.flatten();
+            List<PolyTree> trees = treeTMap.get(goalType);*/
 
-            Log.it("<trees begin>");
-            Log.list( trees );
-            Log.it("<trees end>");
+            List<PolyTree> trees = generator.generate(config.getInt("populationSize"));
+
+
+            logList("trees", trees);
+
+            List<Object> objs = F.map(trees, PolyTree::computeValue);
+            List<TypedDag> dags = F.map(objs, o -> (TypedDag)o);
+            List<String> jsonTrees = F.map(dags, dag -> dag.toJson());
+
+
+            logList("json", jsonTrees);
+            logList("trees", trees);
+            Log.it("num trees: "+ trees.size());
+
+            KutilMain.showDags(dags);
+
 
 
 
@@ -72,6 +86,12 @@ public class Tester {
         }*/
 
 
+    }
+
+    private static void logList(String tag, List<?> list) {
+        Log.it("<"+tag+" begin>");
+        Log.list(list);
+        Log.it("<"+tag+" end>\n");
     }
 
 

@@ -6,9 +6,9 @@
   "dataset" : "winequality-white.csv",
 
   "numGenerations": 10,
-  "populationSize": 3,
 
-  "generatingMaxTreeSize":  15,
+  "populationSize": 100,
+  "generatingMaxTreeSize":  23,
 
   "tournamentBetterWinsProbability" : 0.8,
   "saveBest" : true,

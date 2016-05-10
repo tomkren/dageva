@@ -158,6 +158,9 @@ public class AndGadget {
 
             for (Listek<PolyTree> sons : Listek.toList(acc)) {
                 PolyTree newTree = sym.mkTree(rootType, Listek.toReverseList(sons) );
+
+                newTree.applySub(locSub); // 0.5 Pokus o opravu chyby co se objevila v Tester.java
+
                 ret.add(rootType, newTree);
             }
 
